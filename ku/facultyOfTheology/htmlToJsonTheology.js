@@ -2,7 +2,7 @@ const fs = require('fs');
 const cheerio = require('cheerio');
 
 // Check if the HTML file exists
-const filePath = 'cbshtml.html';
+const filePath = 'facultyOfTheology.html';
 if (!fs.existsSync(filePath)) {
     console.error("The HTML file does not exist.");
     process.exit(1);
@@ -51,7 +51,7 @@ if (uniqueElements.length === 0) {
 
     // Write the JSON output to a file
     try {
-        fs.writeFileSync('cbsOutput.json', jsonOutput, 'utf-8');
+        fs.writeFileSync('facultyOfTheology.json', jsonOutput, 'utf-8');
         console.log("JSON file created successfully: cbsOutput.json");
     } catch (error) {
         console.error("Error writing the JSON file:", error);
