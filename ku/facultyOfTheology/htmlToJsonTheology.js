@@ -24,35 +24,39 @@ console.log(`HTML content length: ${html.length}`);
 // Load the HTML into Cheerio
 const $ = cheerio.load(html);
 
-// Extract all <a> elements and their text content
-const aElements = [];
+// Extract all <a> elements and their text content and href attribute
+const courses = [];
 
 $('a').each((index, element) => {
-    let text = $(element).text().trim();
+    let courseName = $(element).text().trim();
+    let courseLink = $(element).attr('href');
 
     // Remove unwanted characters (\n, \t, etc.)
-    text = text.replace(/\n/g, ' ').replace(/\t/g, ' ').replace(/\s+/g, ' ').trim();
+    courseName = courseName.replace(/\n/g, ' ').replace(/\t/g, ' ').replace(/\s+/g, ' ').trim();
 
-    console.log(`Sanitized <a> tag: "${text}"`);  // Log the sanitized text
-    if (text) {
-        aElements.push(text);
+    if (courseName && courseLink) {
+        // Create an object for each course
+        courses.push({
+            courseName: courseName,
+            courseLink: courseLink
+        });
     }
 });
 
 // Remove duplicates by converting the array to a Set and back to an array
-const uniqueElements = [...new Set(aElements)];
+const uniqueCourses = [...new Set(courses.map(course => JSON.stringify(course)))].map(item => JSON.parse(item));
 
-// Check if any <a> elements were found
-if (uniqueElements.length === 0) {
-    console.log("No <a> elements found or no text extracted.");
+// Check if any course data was found
+if (uniqueCourses.length === 0) {
+    console.log("No <a> elements with valid course data found.");
 } else {
-    // Convert the array of text content to JSON
-    const jsonOutput = JSON.stringify(uniqueElements, null, 4);
+    // Convert the array of course objects to JSON
+    const jsonOutput = JSON.stringify(uniqueCourses, null, 4);
 
     // Write the JSON output to a file
     try {
         fs.writeFileSync('facultyOfTheology.json', jsonOutput, 'utf-8');
-        console.log("JSON file created successfully: cbsOutput.json");
+        console.log("JSON file created successfully: facultyOfTheology.json");
     } catch (error) {
         console.error("Error writing the JSON file:", error);
     }

@@ -24,27 +24,31 @@ console.log(`HTML content length: ${html.length}`);
 // Load the HTML into Cheerio
 const $ = cheerio.load(html);
 
-// Extract all <a> elements and their text content
-const aElements = [];
+// Extract all <a> elements and their text content and href attribute
+const courses = [];
 
 $('a').each((index, element) => {
-    let text = $(element).text().trim();
+    let courseName = $(element).text().trim();
+    let courseLink = $(element).attr('href');
 
     // Remove unwanted characters (\n, \t, etc.)
-    text = text.replace(/\n/g, ' ').replace(/\t/g, ' ').replace(/\s+/g, ' ').trim();
+    courseName = courseName.replace(/\n/g, ' ').replace(/\t/g, ' ').replace(/\s+/g, ' ').trim();
 
-    console.log(`Sanitized <a> tag: "${text}"`);  // Log the sanitized text
-    if (text) {
-        aElements.push(text);
+    if (courseName && courseLink) {
+        // Create an object for each course
+        courses.push({
+            courseName: courseName,
+            courseLink: courseLink
+        });
     }
 });
 
-// Check if any <a> elements were found
-if (aElements.length === 0) {
-    console.log("No <a> elements found or no text extracted.");
+// Check if any course data was found
+if (courses.length === 0) {
+    console.log("No <a> elements with valid course data found.");
 } else {
-    // Convert the array of text content to JSON
-    const jsonOutput = JSON.stringify(aElements, null, 4);
+    // Convert the array of course objects to JSON
+    const jsonOutput = JSON.stringify(courses, null, 4);
 
     // Write the JSON output to a file
     try {
